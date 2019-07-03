@@ -82,7 +82,7 @@ int verb_27(int *p_stage, void **pp_data)
   if (*p_stage == 2)
   {
     verb_27_data *d = (verb_27_data *)*pp_data;
-    uint32_t *disp_ptr = d->addr;
+    uint32_t *disp_ptr = (uint32_t *)d->addr;
     Devices::lcd->setUL(1, disp_ptr[0], d->hex);
     Devices::lcd->setUL(2, disp_ptr[1], d->hex);
     Devices::lcd->setUL(3, disp_ptr[2], d->hex);
@@ -108,7 +108,7 @@ int verb_36(int *p_stage, void **pp_data)
 // NOTE: verb 37 always kills the old program
 int verb_37(int *p_stage, void **pp_data)
 {
-  if (0 == SysUtils::sys->set_program(SysUtils::sys->get_noun()), true)
+  if (0 == SysUtils::sys->set_program(SysUtils::sys->get_noun(), true))
     return SysUtils::SysManager::V_COMPLETE;
   else // program invalid, operator error
     return SysUtils::SysManager::V_OPR_ERR;

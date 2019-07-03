@@ -1,5 +1,6 @@
 /*
-* ISR definitions
+ * ISR definitions
+ * defines interrupts for handling keypad and screen updates
  */
 
 #ifndef ISR_H
@@ -14,7 +15,7 @@ ISR(TIMER4_COMPA_vect) // keypad update
   Devices::keypad->ISRUpdate();
 }
 
-ISR(TIMER5_COMPA_vect) // screen update
+ISR(TIMER5_COMPA_vect) // screen and LED update (from screen buffer)
 {
   // Devices::status_led->setActivityLED(true); // turn on activity LED
 

@@ -152,7 +152,10 @@ public:
 
   // ===== input window and UI managing =====
 
-  // manage input windows
+  // open an input window
+  // creates an InputWindow instance and pass all parameters
+  // NOTE: wrapper useful for keeping track of input window status
+  // NOTE: does NOT freeze the display; the caller is responsible
   int input_window_open(void *p_res, int lc_addr, int offset, int len,
                         InputWindow::iw_mode mode, bool allow_cursor)
   {
@@ -165,6 +168,9 @@ public:
     else // request rejected; caller should raise PGM ERR
       return -1;
   }
+  // close the input window
+  // deletes the InputWindow instance
+  // NOTE: does NOT unfreeze the display; caller is responsible
   int input_window_close()
   {
     if (iw_open_)
@@ -517,7 +523,7 @@ public:
     // else (null program) do nothing
   }
 
-  // update key release light
+  // update key release light according to request status
   void update_key_rel()
   {
     // if requested, mark key release
@@ -591,7 +597,6 @@ public:
 
     execute_verb(); // verb before program s.t. verb37 can work immediately
     step_program();
-
     update_key_rel(); // update key release light
   }
 
