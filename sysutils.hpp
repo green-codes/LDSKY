@@ -183,6 +183,11 @@ public:
       return -1;
   }
   // decide where to send the registered key press
+  // if input window not open, handle key press:
+  // - A: accept key release request
+  // - B: reject key release request
+  // - C: enter vern/noun
+  // - D: stop verb/program that threw errors, and clear error lights
   void process_key_event()
   {
     char k = keypad_->getKeyEvent(); // NOTE: allows next key input
@@ -203,13 +208,13 @@ public:
           if (p_dict_[pvn_state_[0]].status == P_PGM_ERR ||
               p_dict_[pvn_state_[0]].status == P_OPR_ERR)
             kill_program();
-          // reject key release
-          key_release_rej();
           // clear error lights
           status_led_->clearError();
         }
-        else if (k == M_UP_KEY) // key release
+        else if (k == M_UP_KEY) // accept key release
           key_release_acc();
+        else if (k == M_DOWN_KEY) // reject key release
+          key_release_rej();
       }
     }
   }
@@ -304,6 +309,8 @@ public:
   }
 
   // mark a verb-noun pair for execution
+  // NOTE: clears screen and error lights; calls stop_verb() on prev verb;
+  //       sets stage of new verb to 0, verb_status_ to V_RUN
   int set_vn(int v, int n)
   {
     // verb valid
@@ -337,7 +344,9 @@ public:
     return pvn_state_[2];
   }
   // stop a verb; easy since verbs don't store anything
-  // NOTE: may interfere with programs!
+  // NOTE: frees verb persistent memory, sets verb stage to 0;
+  //       sets verb_status_ = V_COMPLETE;
+  //       clears current verb and noun (set to 0)
   void stop_verb()
   {
     free(v_dict_[pvn_state_[1]].data_ptr); // free verb memory
@@ -349,6 +358,10 @@ public:
   }
 
   // execute the current verb in pvn_state_
+  // NOTE: gives the verb function pointers to its stage and storage
+  // NOTE: executes verb only if verb_status_ = V_RUN
+  //       if V_COMPLETE: call stop_verb() on curr verb
+  //       if V_*_ERR, turn on the corresponding error light
   // Note: the verb is respnsible for updating data displays
   void execute_verb()
   {
@@ -396,11 +409,11 @@ public:
   };
   struct PDict_t // program registry entry (pgm should have access to this)
   {
-    bool valid = false;             // program id valid
-    int (*pgm_ptr)(int *, void **); // pointer to the program main func
-    int stage = 0;                  // program stage
-    void *data_ptr = NULL;          // pointer to persistent data (free!)
-    pgm_status_t status = P_RUN;    // program status flag
+    bool valid = false;               // program id valid
+    int (*pgm_ptr)(int *, void **);   // pointer to the program main func
+    int stage = 0;                    // program stage
+    void *data_ptr = NULL;            // pointer to persistent data (free!)
+    pgm_status_t status = P_COMPLETE; // program status flag
   };
 
   // add a program to the program registry
@@ -417,6 +430,8 @@ public:
   }
 
   // set program
+  // NOTE: option to kill or pause the old program
+  //       if the target program is paused, will resume
   int set_program(int id, bool kill_old)
   {
     // program valid
@@ -453,6 +468,7 @@ public:
     return pvn_state_[0];
   }
   // kill the current program
+  // NOTE: frees program storage and set program status to P_COMPLETE
   int kill_program()
   {
     if (!p_dict_[pvn_state_[0]].valid) // pgm invalid
@@ -462,7 +478,19 @@ public:
     pvn_state_[0] = 0;                          // stop program
     return 0;
   }
-  // pause and resume program
+  // kill all programs, including paused ones
+  int kill_program_all()
+  {
+    for (int i = 0; i < 100; i++)
+    {
+      free(p_dict_[i].data_ptr);
+      p_dict_[i].data_ptr = NULL;
+      p_dict_[i].stage = 0;
+      p_dict_[i].status = P_COMPLETE;
+    }
+  }
+  // pause a program
+  // NOTE: can't pause if program state not P_RUN (e.g. P_*_ERR)
   int pause_program(int id)
   {
     if (!p_dict_[id].valid) // pgm invalid
@@ -476,6 +504,8 @@ public:
   {
     return pause_program(pvn_state_[0]);
   }
+  // resume a paused program
+  // NOTE: can't resume if program state not P_PAUSE (e.g. P_*_ERR)
   int resume_program(int id)
   {
     if (!p_dict_[id].valid) // pgm invalid
@@ -491,6 +521,7 @@ public:
   }
 
   // step through the current program
+  // NOTE: calls kill_program() if curr program returns P_COMPLETE
   void step_program()
   {
     int pgm = pvn_state_[0];
@@ -500,11 +531,12 @@ public:
         status_led_->setStatus(LED_PGER_P, true);
       else
       {
+        // run program
         PDict_t *curr_pgm = p_dict_ + pgm;
         if (curr_pgm->status == P_RUN) // execute program
         {
           status_led_->setActivityLED(true); // only programs get ACT lgt
-          pgm_exec_time = millis();
+          pgm_exec_time = millis();          // time program execution
           curr_pgm->status =
               curr_pgm->pgm_ptr(&(curr_pgm->stage), &(curr_pgm->data_ptr));
           pgm_exec_time = millis() - pgm_exec_time;
@@ -512,6 +544,7 @@ public:
         }
         else
           pgm_exec_time = 0;
+        // process program return state
         if (curr_pgm->status == P_COMPLETE) // program complete
           kill_program();
         else if (curr_pgm->status == P_PGM_ERR) // program error
@@ -524,6 +557,7 @@ public:
   }
 
   // update key release light according to request status
+  // if there is a key release request, light; else extinguish
   void update_key_rel()
   {
     // if requested, mark key release
@@ -534,6 +568,7 @@ public:
     else // clear key release
       status_led_->setStatus(LED_KYRL_P, false);
   }
+  // request key release for program, verb and noun
   void request_pvn(int pgm, int v, int n, bool force = false)
   {
     pvn_state_pgm_[0] = pgm;
@@ -543,7 +578,7 @@ public:
     if (force)
       key_release_acc();
   }
-  // request key release (v/n)
+  // request key release (verb/noun only)
   void request_vn(int v, int n, bool force = false)
   {
     pvn_state_pgm_[1] = v;
@@ -552,7 +587,7 @@ public:
     if (force)
       key_release_acc();
   }
-  // request key release (program)
+  // request key release (program only)
   void request_pgm(int pgm, bool force = false)
   {
     pvn_state_pgm_[0] = pgm;
@@ -561,6 +596,7 @@ public:
       key_release_acc();
   }
   // accept key release request, switch
+  // NOTE: calls set_program() and set_vn() according to requests
   void key_release_acc()
   {
     if (keyrel_req == KYRL_REQ_VN ||
@@ -587,7 +623,7 @@ public:
       keyrel_req = KYRL_REJ;
   }
 
-  // do system manager cycle;
+  // do system manager cycle
   // should be called from the main loop
   void update() // the system manager reports to no one...
   {
