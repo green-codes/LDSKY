@@ -36,7 +36,7 @@ int program_01(int *p_stage, void **data_ptr)
   if (*p_stage == 1)
   {
     // request verb/noun switch
-    SysUtils::sys->request_vn(0, 0, true);
+    SysUtils::sys->request_vn(0, 0);
     *p_stage = 2;
   }
   if (*p_stage == 2)
@@ -55,6 +55,7 @@ int program_01(int *p_stage, void **data_ptr)
   }
   if (*p_stage == 3)
   {
+    SysUtils::sys->request_pgm(2, true);
     *((int *)*data_ptr) += 1;
     if (0 == SysUtils::sys->get_verb()) // avoid conflict with verbs
       Devices::lcd->setInt(1, *((int *)*data_ptr));

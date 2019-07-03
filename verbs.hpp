@@ -91,6 +91,12 @@ int verb_27(int *p_stage, void **pp_data)
   return SysUtils::SysManager::V_COMPLETE; // how'd we get here?
 }
 
+// 32: empty test verb for now
+int verb_32(int *p_stage, void **pp_data)
+{
+  return SysUtils::SysManager::V_COMPLETE;
+}
+
 // 36: update information from kRPC
 int verb_36(int *p_stage, void **pp_data)
 {
@@ -135,6 +141,7 @@ void init_verbs()
   SysUtils::sys->register_verb(0, NULL, false);
   SysUtils::sys->register_verb(16, &verb_16, false);
   SysUtils::sys->register_verb(27, &verb_27, true);
+  SysUtils::sys->register_verb(32, &verb_32, false);
   SysUtils::sys->register_verb(36, &verb_36, false);
   SysUtils::sys->register_verb(37, &verb_37, true);
   SysUtils::sys->register_verb(69, &verb_69, false);
