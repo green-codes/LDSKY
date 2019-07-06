@@ -14,9 +14,12 @@ As of now, the code backbone of the LDSKY project is complete and mostly bug fre
 
 I don't have any documentation of the system at the moment, as I'm not even sure where this project is going at this point. Interested parties can dig into the code files, which have some comments scattered throughout. For lists of available VERBs and PROGRAMs, also refer to the code (for now). 
 
-This is a picture of what the system looks like right now. Here you can see the keypad, 4 rows of segment LEDS (the first row displays PROGRAM, VERB and NOUN, and the rest are data display rows), as well as the UPLINK, KEYREL, OPRERR, and PGMERR lights. The KEYREL (key release light) is lit, indicating the program (02) running in the background is requesting to display something. 
+On the hardware side, this is a picture of what the system looks like right now. Here you can see the keypad, 4 rows of segment LEDS (the first row displays PROGRAM, VERB and NOUN, and the rest are data display rows), as well as the UPLINK, KEYREL, OPRERR, and PGMERR lights. The KEYREL (key release light) is lit, indicating the program (02) running in the background is requesting to display something. 
 
 ![ghetto much?](https://i.imgur.com/aGGRWeA.jpg "LDSKY in development")
+
+## License
+This project is open source under the MIT license. 
 
 ## Credits
 The kRPC (kerbal Remote Procedure Call) project, which provides the Serial interface between Arduino boards and Kerbal Space Program. https://github.com/krpc/krpc 
