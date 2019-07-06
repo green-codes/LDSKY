@@ -10,7 +10,7 @@ With the LDSKY interface, I want to give KSP players the option to operate their
 
 ## How is the development going? 
 
-As of now, the code backbone of the LDSKY project is complete and mostly bug free. The current code uses interrupt-based routines on top of the main loop to enable a non-blocking user interface, dynamic VERN and PROGRAM managing, error handling, and (very limited) multitasking. 
+As of now, the code backbone of the LDSKY project is complete and mostly bug free. The current code uses interrupt-based routines on top of the main loop to enable a non-blocking user interface, dynamic VERB and PROGRAM managing, error handling, and (very limited) multitasking. 
 
 I don't have any documentation of the system at the moment, as I'm not even sure where this project is going at this point. Interested parties can dig into the code files, which have somewhat comments scattered throughout. For lists of VERBs and PROGRAMs, also refer to the code (for now). 
 
