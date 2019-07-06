@@ -12,7 +12,7 @@ With the LDSKY interface, I want to give KSP players the option to operate their
 
 As of now, the code backbone of the LDSKY project is complete and mostly bug free. The current code uses interrupt-based routines on top of the main loop to enable a non-blocking user interface, dynamic VERB and PROGRAM managing, error handling, and (very limited) multitasking. 
 
-I don't have any documentation of the system at the moment, as I'm not even sure where this project is going at this point. Interested parties can dig into the code files, which have somewhat comments scattered throughout. For lists of VERBs and PROGRAMs, also refer to the code (for now). 
+I don't have any documentation of the system at the moment, as I'm not even sure where this project is going at this point. Interested parties can dig into the code files, which have some comments scattered throughout. For lists of available VERBs and PROGRAMs, also refer to the code (for now). 
 
 This is a picture of what the system looks like right now. Here you can see the keypad, 4 rows of segment LEDS (the first row displays PROGRAM, VERB and NOUN, and the rest are data display rows), as well as the UPLINK, KEYREL, OPRERR, and PGMERR lights. The KEYREL (key release light) is lit, indicating the program (02) running in the background is requesting to display something. 
 
