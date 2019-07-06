@@ -22,4 +22,6 @@ On the hardware side, this is a picture of what the system looks like right now.
 This project is open source under the MIT license. 
 
 ## Credits
-The kRPC (kerbal Remote Procedure Call) project, which provides the Serial interface between Arduino boards and Kerbal Space Program. https://github.com/krpc/krpc 
+- The kRPC (kerbal Remote Procedure Call) project, which provides the Serial interface between Arduino boards and Kerbal Space Program. https://github.com/krpc/krpc 
+- A modified version of the LEDControl library, copyright (c) 2007 Eberhard Fahle.
+- Other open-source Arduino libraries
