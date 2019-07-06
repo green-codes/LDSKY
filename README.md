@@ -2,7 +2,7 @@
 
 ## What is this project? 
 
-This is an Arduino project to develop a general-purpose computer using an Arduino Mega 2560 (or 2560 mini), 7-segment LED displays (driven by MAX7319 chips), a matrix keypad, and status LEDs, all of which are off-the-shelf components. The computer is intended as a custom control panel of the game Kerbal Space Program, using the kRPC serial-based interface, but in principle the user can use it for whatever they want. 
+This is an Arduino project to develop a general-purpose computer using an Arduino Mega 2560 (or 2560 mini), 7-segment LED displays (driven by MAX7219 chips), a matrix keypad, and status LEDs, all of which are off-the-shelf components. The computer is intended as a custom control panel of the game Kerbal Space Program, using the kRPC serial-based interface, but in principle the user can use it for whatever they want. 
 
 This project is (obviously?) inspired by the DSKY interface originally developed for the Apollo Guidance Computer back in the 1960s. However, I'm in no way attempting to reconstruct or even emulate the real DSKY or AGC. This is merely a (rather clumsy) attempt to approximate the looks and feels of the original DSKY interface for playing KSP. 
 
